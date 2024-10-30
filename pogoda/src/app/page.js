@@ -23,13 +23,11 @@ export default function Home() {
     getData();
   }, []);
 
-  // Helper function to format the date and time
   const formatDate = (dateString) => {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('pl-PL', options);
   };
 
-  // Helper function to round temperature
   const roundTemperature = (temp) => {
     return Math.round(temp);
   };
@@ -38,8 +36,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center h-screen bg-black text-white">
       {data && (
         <>
-          {/* Dzisiejsza pogoda */}
-          <Card className="mb-12 bg-gray-800">
+          <Card className="mb-12 bg-gray-800 p-8">
             <CardContent>
               <div className="flex items-center justify-center">
                 <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
@@ -47,7 +44,6 @@ export default function Home() {
                 </h1>
               </div>
 
-              {/* Ikona pogody */}
               <div className="flex items-center justify-center mb-4">
                 <img
                   src={`https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`}
@@ -56,7 +52,6 @@ export default function Home() {
                 />
               </div>
 
-              {/* Pozostałe informacje */}
               <div className="flex flex-row gap-[2px] items-center justify-center">
                 <p className="leading-7 mt-6">{data.city.name} | </p>
                 <p className="leading-7 [&:not(:first-child)]:mt-6">{data.list[0].weather[0].description} | </p>
@@ -66,21 +61,18 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          {/* Prognoza na kolejne 4 dni */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-auto">
             {[8, 16, 24, 32].map((index) => (
               <Card key={index} className="p-8 rounded shadow-lg text-center bg-gray-800">
                 <CardContent>
                   <p className="text-sm text-muted-foreground">{formatDate(data.list[index].dt_txt)}</p>
 
-                  {/* Temperatura */}
                   <div className="flex items-center justify-center">
                     <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                       {roundTemperature(data.list[index].main.temp)} °C
                     </h1>
                   </div>
 
-                  {/* Ikona pogody */}
                   <div className="flex items-center justify-center mb-4">
                     <img
                       src={`https://openweathermap.org/img/wn/${data.list[index].weather[0].icon}@2x.png`}
@@ -89,7 +81,6 @@ export default function Home() {
                     />
                   </div>
 
-                  {/* Pozostałe informacje */}
                   <div className="flex flex-row gap-[2px] items-center justify-center">
                     <p className="leading-7 mt-6">{data.city.name} | </p>
                     <p className="leading-7 [&:not(:first-child)]:mt-6">{data.list[index].weather[0].description} | </p>
