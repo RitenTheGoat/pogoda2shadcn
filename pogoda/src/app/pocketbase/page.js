@@ -7,7 +7,7 @@ import { Timer } from 'lucide-react';
 import Image from 'next/image';
 import PocketBase from 'pocketbase';
 import { useEffect, useState } from 'react';
-
+import Delitem from '@/components/pocketbase/delitem';
 const pb = new PocketBase('http://172.16.15.139:8080');
 
 export default function Home(){
@@ -71,17 +71,14 @@ const handleZdj = (e)=>{
     setzdj(e.target.files[0])
 }
 
+const deleted = (id)=>{
+    setsamochody((prev)=>
+    prev.filter((el)=>{
+        return el.id != id
+    })
+    )
+}
 
-const handleDel = async (id) => {
-    try {
-        await pb.collection('samochody').delete(id);
-        setsamochody((prev) => 
-            prev.filter((samochod) => samochod.id !== id)
-        );
-    } catch (err) {
-        console.error("Failed to delete:", err);
-    }
-};
 
 
 
@@ -108,14 +105,23 @@ const handleDel = async (id) => {
                     />
                 </CardContent>
                 <CardFooter>
-                    <div className='flex justify-end w-[100%]'>
+                    <div>
+
+                        <div className='w-full flex justify-between'>
+                        <Delitem id={samochod.id} ondeleted={deleted}/>
+                        </div>
+
+
+
+                        <div className='flex justify-end w-[100%]'>
                         <Timer/>
                         <p>czas parkowania</p>
                         {samochod.czas_parkowania}
+                         </div>
+
                     </div>
-                    <div>
-                    <Button onClick={() => handleDel(samochod.id)} className="w-full">usun</Button>
-                    </div>
+                    
+                   
                    </CardFooter>
             </Card>
                 
