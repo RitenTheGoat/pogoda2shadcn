@@ -8,6 +8,8 @@ import Image from 'next/image';
 import PocketBase from 'pocketbase';
 import { useEffect, useState } from 'react';
 import Delitem from '@/components/pocketbase/delitem';
+import EditItem from '@/components/pocketbase/edititem';
+
 const pb = new PocketBase('http://172.16.15.139:8080');
 
 export default function Home(){
@@ -79,6 +81,19 @@ const deleted = (id)=>{
     )
 }
 
+const updated = (item)=>{
+ console.log(item)
+ var index = null
+ var tmpsamochody = [...samochody]
+ for(let i in samochody){
+    if(samochody[i].id == item.id){
+        index = i
+    }
+    tmpsamochody[index] = item
+    setsamochody(tmpsamochody)
+    console.log("index: " + index)
+ }
+}
 
 
 
@@ -109,6 +124,7 @@ const deleted = (id)=>{
 
                         <div className='w-full flex justify-between'>
                         <Delitem id={samochod.id} ondeleted={deleted}/>
+                        <EditItem item={samochod} onupdated={updated}/>
                         </div>
 
 
