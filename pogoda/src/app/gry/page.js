@@ -43,6 +43,7 @@ export default function Home() {
     const [opis, setOpis] = useState("");
     const [selectedGra, setSelectedGra] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false);  // Controlled state for Dialog
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false); // Dialog state for delete
 
     useEffect(() => {
         const getData = async () => {
@@ -58,10 +59,11 @@ export default function Home() {
         getData();
     }, []);
 
-    const handleDelete = async (id) => {
+    const handleDelete = async () => {
         try {
-            await pb.collection("gry").delete(id);
-            setGry((prevGry) => prevGry.filter((gra) => gra.id !== id));
+            await pb.collection("gry").delete(selectedGra.id);
+            setGry((prevGry) => prevGry.filter((gra) => gra.id !== selectedGra.id));
+            setDeleteDialogOpen(false); // Close the delete dialog after deletion
         } catch (err) {
             console.error("Error deleting record:", err);
         }
@@ -145,14 +147,12 @@ export default function Home() {
                                     alt={gra.zdj}
                                     className="rounded-mb"
                                     layout="fill"
-
                                 />
-                                </div>
+                              </div>
                             </CardTitle>
                             <CardContent className="flex items-center justify-center  flex-col ">
                                 <div><h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{gra.nazwa}</h3></div> 
-                                <div><p className="leading-7 [&:not(:first-child)]:mt-6">{gra.cena}    </p>
-                                </div>
+                                <div><p className="leading-7 [&:not(:first-child)]:mt-6">{gra.cena}    </p></div>
                             </CardContent>
                             <CardDescription className="my-7">{gra.opis}</CardDescription>
                             <CardFooter className="flex justify-between items-center">
@@ -160,11 +160,14 @@ export default function Home() {
                                     <DropdownMenuTrigger>...</DropdownMenuTrigger>
                                     <DropdownMenuContent>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem onClick={() => handleDelete(gra.id)}>
-                                            usuń
+                                        <DropdownMenuItem onClick={() => {
+                                            setSelectedGra(gra);
+                                            setDeleteDialogOpen(true); // Open delete dialog
+                                        }}>
+                                            Usuń
                                         </DropdownMenuItem>
                                         <DropdownMenuItem onClick={() => openEditDialog(gra)}>
-                                            edytuj
+                                            Edytuj
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
@@ -202,7 +205,7 @@ export default function Home() {
                                 <Input
                                     placeholder="Opis"
                                     value={opis}
-                                    onChange={(e) => setOpis(e.target.value) }
+                                    onChange={(e) => setOpis(e.target.value)}
                                 />
                             </div>
                             <SheetFooter>
@@ -245,6 +248,23 @@ export default function Home() {
                         />
                     </div>
                     <Button onClick={handleEdit}>Zapisz</Button>
+                </DialogContent>
+            </Dialog>
+
+            {/* Dialog for deleting game */}
+            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <DialogTrigger /> {/* This is now hidden, the dialog is controlled by state */}
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Usuń grę</DialogTitle>
+                        <DialogDescription>
+                            Czy na pewno chcesz usunąć tę grę?
+                            
+                        <Button onClick={() => setDeleteDialogOpen(false)}>Anuluj</Button>
+                        <Button onClick={handleDelete}>Usuń</Button>
+                        </DialogDescription>
+                    </DialogHeader>
+                    
                 </DialogContent>
             </Dialog>
         </div>
