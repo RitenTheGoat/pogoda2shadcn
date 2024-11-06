@@ -9,9 +9,9 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch"; // Import the Switch component
 import {
     Sheet,
-    SheetClose,
     SheetContent,
     SheetDescription,
     SheetFooter,
@@ -41,6 +41,7 @@ export default function Home() {
     const [zdj, setZdj] = useState(null);
     const [opis, setOpis] = useState("");
     const [selectedGra, setSelectedGra] = useState(null);
+    const [dialogOpen, setDialogOpen] = useState(false);  // Controlled state for Dialog
 
     useEffect(() => {
         const getData = async () => {
@@ -102,6 +103,7 @@ export default function Home() {
             setCena("");
             setOpis("");
             setZdj(null);
+            setDialogOpen(false);  // Close dialog after edit
         } catch (err) {
             console.error("Error updating record:", err);
         }
@@ -113,6 +115,20 @@ export default function Home() {
         setCena(gra.cena);
         setOpis(gra.opis);
         setZdj(null);
+        setDialogOpen(true);  // Open dialog when edit button is clicked
+    };
+
+    const handleSwitchChange = async (gra, checked) => {
+        try {
+            const updatedGra = await pb.collection("gry").update(gra.id, {
+                stan: checked,
+            });
+            setGry((prevGry) =>
+                prevGry.map((g) => (g.id === gra.id ? updatedGra : g))
+            );
+        } catch (err) {
+            console.error("Error updating stan:", err);
+        }
     };
 
     return (
@@ -134,7 +150,7 @@ export default function Home() {
                                 {gra.nazwa} <br /> {gra.cena}
                             </CardContent>
                             <CardDescription>{gra.opis}</CardDescription>
-                            <CardFooter>
+                            <CardFooter className="flex justify-between items-center">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger>...</DropdownMenuTrigger>
                                     <DropdownMenuContent>
@@ -142,45 +158,15 @@ export default function Home() {
                                         <DropdownMenuItem onClick={() => handleDelete(gra.id)}>
                                             usuń
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            <Dialog>
-                                                <DialogTrigger onClick={() => openEditDialog(gra)}>
-                                                    edytuj
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        <DialogTitle>Edycja gry</DialogTitle>
-                                                        <DialogDescription>
-                                                            Edytuj dane gry i zapisz zmiany.
-                                                        </DialogDescription>
-                                                    </DialogHeader>
-                                                    <div className="space-y-4 p-4">
-                                                        <Input
-                                                            placeholder="Nazwa"
-                                                            value={nazwa}
-                                                            onChange={(e) => setNazwa(e.target.value)}
-                                                        />
-                                                        <Input
-                                                            placeholder="Cena"
-                                                            value={cena}
-                                                            onChange={(e) => setCena(e.target.value)}
-                                                        />
-                                                        <Input
-                                                            type="file"
-                                                            onChange={(e) => setZdj(e.target.files[0])}
-                                                        />
-                                                        <Input
-                                                            placeholder="Opis"
-                                                            value={opis}
-                                                            onChange={(e) => setOpis(e.target.value)}
-                                                        />
-                                                    </div>
-                                                    <Button onClick={handleEdit}>Zapisz</Button>
-                                                </DialogContent>
-                                            </Dialog>
+                                        <DropdownMenuItem onClick={() => openEditDialog(gra)}>
+                                            edytuj
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
+                                <Switch
+                                    checked={gra.stan}  // Set the Switch based on the "stan" value
+                                    onCheckedChange={(checked) => handleSwitchChange(gra, checked)}  // Update "stan" when toggled
+                                />
                             </CardFooter>
                         </Card>
                     ))}
@@ -221,6 +207,41 @@ export default function Home() {
                     </Sheet>
                 </div>
             )}
+
+            {/* Dialog for editing game */}
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger /> {/* This is now hidden, the dialog is controlled by state */}
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Edycja gry</DialogTitle>
+                        <DialogDescription>
+                            Edytuj dane gry i zapisz zmiany.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 p-4">
+                        <Input
+                            placeholder="Nazwa"
+                            value={nazwa}
+                            onChange={(e) => setNazwa(e.target.value)}
+                        />
+                        <Input
+                            placeholder="Cena"
+                            value={cena}
+                            onChange={(e) => setCena(e.target.value)}
+                        />
+                        <Input
+                            type="file"
+                            onChange={(e) => setZdj(e.target.files[0])}
+                        />
+                        <Input
+                            placeholder="Opis"
+                            value={opis}
+                            onChange={(e) => setOpis(e.target.value)}
+                        />
+                    </div>
+                    <Button onClick={handleEdit}>Zapisz</Button>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
