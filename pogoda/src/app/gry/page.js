@@ -31,6 +31,7 @@ import {
 import Image from "next/image";
 import PocketBase from "pocketbase";
 import { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
 
 const pb = new PocketBase("http://172.16.15.139:8080");
 
@@ -136,20 +137,24 @@ export default function Home() {
             {gry && (
                 <div className="flex flex-wrap w-full justify-center gap-5">
                     {gry.map((gra) => (
-                        <Card key={gra.id} className="w-[500px] h-[500px]">
+                        <Card key={gra.id} className="w-[370px] h-[500px] ">
                             <CardTitle>
+                              <div className="relative h-[250px] w-[369px]">
                                 <Image
                                     src={pb.files.getUrl(gra, gra.zdj)}
                                     alt={gra.zdj}
-                                    height={500}
-                                    width={500}
                                     className="rounded-mb"
+                                    layout="fill"
+
                                 />
+                                </div>
                             </CardTitle>
-                            <CardContent>
-                                {gra.nazwa} <br /> {gra.cena}
+                            <CardContent className="flex items-center justify-center  flex-col ">
+                                <div><h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{gra.nazwa}</h3></div> 
+                                <div><p className="leading-7 [&:not(:first-child)]:mt-6">{gra.cena}    </p>
+                                </div>
                             </CardContent>
-                            <CardDescription>{gra.opis}</CardDescription>
+                            <CardDescription className="my-7">{gra.opis}</CardDescription>
                             <CardFooter className="flex justify-between items-center">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger>...</DropdownMenuTrigger>
@@ -174,7 +179,7 @@ export default function Home() {
                     <Sheet>
                         <SheetTrigger>
                             <Card className="flex items-center justify-center w-[500px] h-[500px]">
-                                <h1>+</h1>
+                                <h1><Plus size={150}/></h1>
                             </Card>
                         </SheetTrigger>
                         <SheetContent>
@@ -197,7 +202,7 @@ export default function Home() {
                                 <Input
                                     placeholder="Opis"
                                     value={opis}
-                                    onChange={(e) => setOpis(e.target.value)}
+                                    onChange={(e) => setOpis(e.target.value) }
                                 />
                             </div>
                             <SheetFooter>
