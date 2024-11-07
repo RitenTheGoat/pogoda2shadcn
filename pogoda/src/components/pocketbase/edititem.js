@@ -43,8 +43,9 @@ export default function DialogDemo({item, onupdated}) {
     formData.append("marka",dane.marka)
     formData.append("model",dane.model)
     formData.append("czas_parkowania",dane.czas_parkowania)
+    if(zdj){
     formData.append("zdjecie",zdj)
-
+    }
         const record = await pb.collection('samochody').update(item.id, formData);
 
         onupdated(record)

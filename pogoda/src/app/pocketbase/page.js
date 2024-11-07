@@ -9,6 +9,7 @@ import PocketBase from 'pocketbase';
 import { useEffect, useState } from 'react';
 import Delitem from '@/components/pocketbase/delitem';
 import EditItem from '@/components/pocketbase/edititem';
+import User_avatar from '@/components/pocketbase/user_avatar';
 
 const pb = new PocketBase('http://172.16.15.139:8080');
 
@@ -16,6 +17,19 @@ export default function Home(){
     const [samochody,setsamochody] = useState(null)
     const [dane,setdane] = useState({marka: null, model: null, czas_parkowania: null})
     const [zdj,setzdj] = useState(null)
+    const [user,setuser] = useState(null)
+
+useEffect(()=>{
+    setuser(pb.authStore.model)
+
+
+
+},[])
+const login = async ()=>{
+    setuser(pb.authStore.model)
+            
+    
+        }
 
 useEffect(()=>{
 
@@ -54,7 +68,9 @@ const handleSubmit =async ()=>{
     formData.append("marka",dane.marka)
     formData.append("model",dane.model)
     formData.append("czas_parkowania",dane.czas_parkowania)
+    if(zdj){
     formData.append("zdjecie",zdj)
+    }
 
     try{
         const record = await pb.collection('samochody').create(formData);
@@ -101,8 +117,11 @@ const updated = (item)=>{
 
     return(
         <div>
+<User_avatar onlogin={login} user={user} setuser={setuser}/>
+{
+    user &&
 
-{            
+          
 
             samochody &&
             <div className='flex flex-wrap w-full justify-center gap-5'>
@@ -143,7 +162,8 @@ const updated = (item)=>{
                 
             ))}
             </div>
-            }
+            
+        }
 <div className='mt-5 flex flex-col w-full items-center flex-wrap gap-5'>
     <div className="grid w-full max-w-sm items-center gap-1.5">
       <Label htmlFor="marka">marka</Label>
