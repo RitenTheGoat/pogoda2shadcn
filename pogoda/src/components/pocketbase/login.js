@@ -12,6 +12,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useEffect, useState } from "react"
 import PocketBase from 'pocketbase';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import New_user from "./new_user"
+
 
 const pb = new PocketBase('http://172.16.15.139:8080');
 
@@ -63,7 +66,15 @@ export default function Login_form_dialog({onlogin}) {
             Make changes to your profile here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+       
+
+        <Tabs defaultValue="account">
+  <TabsList className="flex flex-row gap-4">
+    <TabsTrigger value="account">Logowanie</TabsTrigger>
+    <TabsTrigger value="password">Rejestracja</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account"> 
+    <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
               Name
@@ -85,19 +96,26 @@ export default function Login_form_dialog({onlogin}) {
               id="username"
               defaultValue=""
               className="col-span-3"
+              type="password"
               onChange={(e)=>{
                 handlePass(e)
               }}
             />
           </div>
         </div>
-        <DialogFooter >
-<div className="flex flex-col w-full">
+        <div className="flex flex-col w-full">
         {error && <p className="mt-1">nie udało sie zalogowac</p>}
 
           <Button onClick={handleButton}>Save changes</Button>
 </div>
-        </DialogFooter>
+
+</TabsContent>
+  <TabsContent value="password">
+            <New_user setOpen={setOpen}/>
+  </TabsContent>
+
+</Tabs>
+
       </DialogContent>
     </Dialog>
   )

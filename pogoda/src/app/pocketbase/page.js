@@ -161,10 +161,7 @@ const updated = (item)=>{
             </Card>
                 
             ))}
-            </div>
-            
-        }
-<div className='mt-5 flex flex-col w-full items-center flex-wrap gap-5'>
+            <div className='mt-5 flex flex-col w-full items-center flex-wrap gap-5'>
     <div className="grid w-full max-w-sm items-center gap-1.5">
       <Label htmlFor="marka">marka</Label>
       <Input onChange={(e)=> {handleInpuChange("marka",e)}} type="text" id="marka" placeholder="marka" />
@@ -189,6 +186,10 @@ const updated = (item)=>{
     </div>
     
 </div>
+            </div>
+            
+        }
+
             {/*samochody &&
             <Card className="w-[300px] h-[300px]">
                 <CardTitle>{samochody[0].marka}</CardTitle>
