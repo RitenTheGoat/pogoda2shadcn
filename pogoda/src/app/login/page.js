@@ -28,8 +28,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-// Initialize PocketBase
-const pb = new PocketBase("http://192.168.2.5:8080");
+// http://172.16.15.139/
+const pb = new PocketBase("http://172.16.15.139:8080");
 
 export default function AvatarDemo() {
   const router = useRouter();
@@ -88,7 +88,8 @@ export default function AvatarDemo() {
   };
 
   return (
-    <DropdownMenu>
+    <div className="w-full flex flex-row-reverse items-start">
+    <DropdownMenu >
       <DropdownMenuTrigger>
         <Avatar>
           {zdj ? (
@@ -161,5 +162,6 @@ export default function AvatarDemo() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    </div>
   );
 }
